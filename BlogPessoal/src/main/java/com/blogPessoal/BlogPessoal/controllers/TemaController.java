@@ -1,6 +1,9 @@
 package com.blogPessoal.BlogPessoal.controllers;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.blogPessoal.BlogPessoal.models.Tema;
 import com.blogPessoal.BlogPessoal.repositories.TemaRepository;
@@ -34,7 +39,7 @@ public class TemaController {
 	@GetMapping("/{id}")
 	public ResponseEntity <Tema> findByIDTema (@PathVariable long id) {
 		return repository.findById(id).map(resp -> ResponseEntity.ok(resp))
-				.orElse(ResponseEntity.notFound().build());
+				.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
 	}
 	
 	@GetMapping("/descricao/{descricao}")
@@ -43,17 +48,24 @@ public class TemaController {
 	}
 	
 	@PostMapping
-	public ResponseEntity <Tema> postTema (@RequestBody Tema tema) {
+	public ResponseEntity <Tema> postTema (@Valid @RequestBody Tema tema) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(tema));
 	}
 	
 	@PutMapping
-	public ResponseEntity <Tema> putTema (@RequestBody Tema tema) {
-		return ResponseEntity.ok(repository.save(tema));
+	public ResponseEntity <Tema> putTema (@Valid @RequestBody Tema tema) {
+		return repository.findById(tema.getId())
+				.map(resp -> ResponseEntity.status(HttpStatus.CREATED).body(repository.save(tema)))
+				.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
 	}
 	
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/{id}")
 	public void deleteTema (@PathVariable long id) {
+		Optional<Tema> tema = repository.findById(id);
+		if (tema.isEmpty())
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		
 		repository.deleteById(id);
 	}
 }
