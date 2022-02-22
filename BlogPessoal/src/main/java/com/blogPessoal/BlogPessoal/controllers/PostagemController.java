@@ -44,12 +44,13 @@ public class PostagemController {
 
 	@GetMapping("/titulo/{titulo}")
 	public ResponseEntity<List<Postagem>> findByDescricaoTitulo(@PathVariable String titulo) {
-		return ResponseEntity.ok(repository.getByTituloContainingIgnoreCase(titulo));
+		return ResponseEntity.ok(repository.findAllByTituloContainingIgnoreCase(titulo));
 	}
 
 	@PostMapping
 	public ResponseEntity<Postagem> postPostagem(@Valid @RequestBody Postagem postagem) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(postagem));
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(repository.save(postagem));
 	}
 
 	@PutMapping

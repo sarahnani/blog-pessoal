@@ -44,12 +44,13 @@ public class TemaController {
 	
 	@GetMapping("/descricao/{descricao}")
 	public ResponseEntity<List<Tema>> findByDescricaoPostagem (@PathVariable String descricao) {
-		return ResponseEntity.ok(repository.findByDescricaoPostagemIgnoreCase(descricao));
+		return ResponseEntity.ok(repository.findAllByDescricaoContainingIgnoreCase(descricao));
 	}
 	
 	@PostMapping
 	public ResponseEntity <Tema> postTema (@Valid @RequestBody Tema tema) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(tema));
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(repository.save(tema));
 	}
 	
 	@PutMapping

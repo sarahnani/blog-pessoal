@@ -9,8 +9,6 @@ import com.blogPessoal.BlogPessoal.models.Tema;
 
 @Repository
 public interface TemaRepository extends JpaRepository <Tema, Long> {
-
-	public List <Tema> findAll();
 	
-	public List <Tema> findByDescricaoPostagemIgnoreCase (String descricao);
+	public List <Tema> findAllByDescricaoContainingIgnoreCase (String descricao);
 }

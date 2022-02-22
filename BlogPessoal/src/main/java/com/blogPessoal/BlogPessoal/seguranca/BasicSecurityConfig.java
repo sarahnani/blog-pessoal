@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private UserDetailsService userDetailsService;
+	private UserDetailsServiceImplements service;
 
 	@Bean
 	public PasswordEncoder PasswordEncoder() {
@@ -25,20 +25,20 @@ public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService);
+		auth.userDetailsService(service);
 
 		auth.inMemoryAuthentication()
 			.withUser("sarah")
 			.password(PasswordEncoder().encode("nani"))
-			.authorities("ROLE_USER");
+			.authorities("ROLE_ADMIN");
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers(HttpMethod.POST, "/usuarios/cadastrar").permitAll()
-			.antMatchers(HttpMethod.POST, "/usuarios/logar").permitAll()
-			.anyRequest().authenticated()
+				.antMatchers(HttpMethod.POST, "/usuarios/cadastrar").permitAll()
+				.antMatchers(HttpMethod.POST, "/usuarios/logar").permitAll()
+				.anyRequest().authenticated()
 			.and().httpBasic()
 			.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and().cors()

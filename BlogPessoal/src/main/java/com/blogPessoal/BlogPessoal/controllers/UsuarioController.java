@@ -47,19 +47,22 @@ public class UsuarioController {
 
 	@PostMapping("/logar")
 	public ResponseEntity<UsuarioLoginDTO> autenticationUsuario(@RequestBody Optional<UsuarioLoginDTO> usuario) {
-		return service.logarUsuario(usuario).map(resp -> ResponseEntity.ok(resp))
+		return service.logarUsuario(usuario)
+				.map(resp -> ResponseEntity.ok(resp))
 				.orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
 	}
 
 	@PostMapping("/cadastrar")
 	public ResponseEntity <Usuario> postUsuario(@Valid @RequestBody Usuario usuario) {
-		return service.cadastrarUsuario(usuario).map(resp -> ResponseEntity.status(HttpStatus.CREATED).body(resp))
+		return service.cadastrarUsuario(usuario)
+				.map(resp -> ResponseEntity.status(HttpStatus.CREATED).body(resp))
 				.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
 	}
 
 	@PutMapping("/atualizar")
 	public ResponseEntity <Usuario> putUsuario(@Valid @RequestBody Usuario usuario) {
-		return service.atualizarUsuario(usuario).map(resp -> ResponseEntity.status(HttpStatus.OK).body(resp))
+		return service.atualizarUsuario(usuario)
+				.map(resp -> ResponseEntity.status(HttpStatus.OK).body(resp))
 				.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
 	}
 }
